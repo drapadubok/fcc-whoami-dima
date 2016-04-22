@@ -1,33 +1,31 @@
 'use strict';
 
-function getIP(header) {
-    return header["x-forwarded-for"];
+var whoami = {
+    getIP: function(header) {
+        return header["x-forwarded-for"];
+    },
+    
+    getLanguage: function(header) {
+        return header["accept-language"].split(",")[0];
+    },
+    
+    getSoftware: function(header) {
+    	var re = /\((.*?)\)/;
+        return header["user-agent"].match(re)[1];
+    },
+    
+    whoAmI: function(req) {
+        var output = {
+            "ipaddress": this.getIP(req.headers),
+    		"language": this.getLanguage(req.headers),
+    		"software": this.getSoftware(req.headers)
+        };
+        return output;
+    }
 }
 
-function getLanguage(header) {
-    return header["accept-language"].split(",")[0];
-}
 
-function getSoftware(header) {
-	var re = /\((.*?)\)/;
-    return header["user-agent"].match(re)[1];
-}
-
-function whoAmI(req) {
-    var output = {
-        "ipaddress": getIP(req.headers),
-		"language": getLanguage(req.headers),
-		"software": getSoftware(req.headers)
-    };
-    return output;
-}
-
-module.exports = {
-    getIP: getIP,
-    getLanguage: getLanguage,
-    getSoftware: getSoftware,
-    whoAmI: whoAmI
-};
+module.exports = whoami;
 
 
 
